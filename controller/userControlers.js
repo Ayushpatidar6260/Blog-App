@@ -80,7 +80,7 @@ const userLogin = async (req, res) => {
       { expiresIn: 3600 }, // Token expires in 1 hour
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ msg: "Login successfull", token, user });
       }
     );
   } catch (err) {

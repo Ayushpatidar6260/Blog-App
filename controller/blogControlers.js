@@ -58,51 +58,9 @@ const blogList = async (req, res) => {
   }
 };
 
-const blogDetail = async (req, res) => {
-  const id = req.params.id;
-  try {
-    const blogDetail = await blogSchema.findById(id, {
-      title: 1,
-      discription: 1,
-      blog_pic: 1,
-      _id: 0,
-    });
-    const comment = await commentSchema
-      .find({ blog_id: id })
-      .sort({ createdAt: -1 })
-      .populate("user_id", { name: 1, profile_Pic: 1, createdAt: 1, _id: 0 });
-    res.status(200).json({
-      success: true,
-      message: blogDetail,
-      Comment: comment,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).send({
-      success: false,
-      message: err.message,
-    });
-  }
-};
-
-const blogDelet = async (req, res) => {
-  const id = req.params.id;
-  try {
-    const delet = await blogSchema.findByIdAndDelete(id);
-    res.status(202).json({
-      success: true,
-      message: "Blog Delete Successfully",
-    });
-  } catch (err) {
-    res.status(500).send({
-      success: false,
-      message: err.message,
-    });
-  }
-};
-
 const likeBlog = async (req, res) => {
   const { id, likes } = req.params;
+  console.log(req.params);
 
   try {
     const blogLike = await blogSchema.findById(id).select("like");
@@ -162,6 +120,58 @@ const searchBlog = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+const blogDetail = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const blogDetail = await blogSchema.findById(id, {
+      title: 1,
+      discription: 1,
+      blog_pic: 1,
+      _id: 0,
+    });
+
+    if (!blogDetail) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "Blog not found..!!" });
+    }
+    const comments = await commentSchema
+      .find({ blog_id: id })
+      .sort({ createdAt: -1 })
+      .populate("user_id", { name: 1, profile_Pic: 1, createdAt: 1, _id: 0 });
+
+    console.log("Listing a Blog", blogDetail);
+
+    res.status(200).json({
+      success: true,
+      message: blogDetail,
+      comments: comments,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+const blogDelet = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const delet = await blogSchema.findByIdAndDelete(id);
+    res.status(202).json({
+      success: true,
+      message: "Blog Delete Successfully",
+    });
+  } catch (err) {
+    res.status(500).send({
       success: false,
       message: err.message,
     });

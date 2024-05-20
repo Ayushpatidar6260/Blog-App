@@ -6,6 +6,7 @@ const registerComment = async (req, res) => {
     const commentData = await comment.save();
     res.status(201).json({
       msg: "Comment Added Successfully",
+      commentData,
     });
   } catch (err) {
     res.status(500).json({
