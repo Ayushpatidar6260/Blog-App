@@ -33,7 +33,9 @@ const userSignup = async (req, res) => {
     }
 
     const salt = await bcrypt.genSalt(10);
+
     const hashPassword = await bcrypt.hash(password, salt);
+
     const data = await userSchema.create({
       name: name,
       email: email,

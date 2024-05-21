@@ -14,7 +14,7 @@ var storage = multer.diskStorage({
         "." +
         ext[ext.length - 1]
     );
-  },
+  },  
 });
 var upload = multer({ storage });
 module.exports = upload;
